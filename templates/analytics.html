@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ page_title }} - Sangguniang Bayan Legislative Document Tracking System</title>
+
+    <style>
+
+        /* ===== GLOBAL ===== */
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, sans-serif;
+        }
+
+        body{
+            background:#f4f6f9;
+        }
+
+        /* ===== HEADER ===== */
+        .header{
+            background:#1e3c72;
+            color:white;
+            padding:15px 30px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+
+        .header-right{
+            display:flex;
+            align-items:center;
+            gap:20px;
+        }
+
+        .user-status{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            font-size:14px;
+        }
+
+        .status-indicator{
+            width:10px;
+            height:10px;
+            background:#27ae60;
+            border-radius:50%;
+            animation:pulse 2s infinite;
+        }
+
+        @keyframes pulse{
+            0%, 100%{
+                opacity:1;
+            }
+            50%{
+                opacity:0.7;
+            }
+        }
+
+        /* ===== LAYOUT ===== */
+        .container{
+            display:flex;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar{
+            width:250px;
+            background:#2c3e50;
+            min-height:100vh;
+            padding-top:20px;
+        }
+
+        .sidebar a{
+            display:block;
+            color:white;
+            text-decoration:none;
+            padding:15px 20px;
+        }
+
+        .sidebar a:hover{
+            background:#34495e;
+        }
+
+        /* ===== CONTENT ===== */
+        .content{
+            flex:1;
+            padding:30px;
+        }
+
+        /* ===== PAGE HEADER ===== */
+        .page-header{
+            margin-bottom:25px;
+            display:flex;
+            flex-direction:column;
+            align-items:flex-start;
+            gap:6px;
+        }
+
+        .page-title{
+            color:#1e3c72;
+            font-size:28px;
+            font-weight:700;
+            margin-bottom:0;
+            line-height:1.2;
+        }
+
+        .page-subtitle{
+            color:#666;
+            font-size:13px;
+        }
+
+        .btn-back{
+            background:#1e3c72;
+            color:white;
+            text-decoration:none;
+            padding:10px 15px;
+            border-radius:5px;
+            display:inline-block;
+            font-size:14px;
+            margin-bottom:8px;
+        }
+
+        .back-link{
+            display:inline-block;
+            margin-top:15px;
+            color:#1e3c72;
+            text-decoration:none;
+            font-weight:bold;
+            transition:0.3s;
+        }
+
+        .back-link:hover{
+            color:#0f2744;
+            text-decoration:underline;
+        }
+
+        /* ===== CONTROLS ===== */
+        .controls{
+            display:flex;
+            gap:15px;
+            margin-bottom:25px;
+            flex-wrap:wrap;
+            align-items:center;
+            background:white;
+            padding:20px;
+            border-radius:10px;
+            box-shadow:0 2px 10px rgba(0,0,0,.1);
+        }
+
+        .search-box{
+            flex:1;
+            min-width:250px;
+        }
+
+        .search-box input{
+            width:100%;
+            padding:10px 15px;
+            border:1px solid #ddd;
+            border-radius:5px;
+            font-size:14px;
+            box-shadow:0 2px 5px rgba(0,0,0,.05);
+        }
+
+        .search-box input:focus{
+            outline:none;
+            border-color:#1e3c72;
+            box-shadow:0 2px 10px rgba(30, 60, 114, 0.1);
+        }
+
+        .filter-group{
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+        }
+
+        .filter-group select{
+            padding:10px 12px;
+            border:1px solid #ddd;
+            border-radius:5px;
+            background:white;
+            font-size:14px;
+            box-shadow:0 2px 5px rgba(0,0,0,.05);
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        .filter-group select:hover{
+            border-color:#1e3c72;
+        }
+
+        .filter-group select:focus{
+            outline:none;
+            border-color:#1e3c72;
+            box-shadow:0 2px 10px rgba(30, 60, 114, 0.1);
+        }
+
+        .btn-print{
+            padding:10px 20px;
+            background:#1e3c72;
+            color:white;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
+            font-size:14px;
+            font-weight:bold;
+            transition:0.3s;
+        }
+
+        .btn-print:hover{
+            background:#152847;
+            transform:translateY(-2px);
+            box-shadow:0 4px 10px rgba(30, 60, 114, 0.2);
+        }
+
+        .result-count{
+            color:#666;
+            font-size:13px;
+            padding:0 10px;
+            white-space:nowrap;
+        }
+
+        /* ===== TABLE ===== */
+        table{
+            width:100%;
+            border-collapse:collapse;
+            background:white;
+            box-shadow:0 2px 10px rgba(0,0,0,.1);
+        }
+
+        th{
+            background:#1e3c72;
+            color:white;
+            padding:12px;
+            text-align:left;
+        }
+
+        td{
+            padding:12px;
+            border-bottom:1px solid #ddd;
+            vertical-align:top;
+        }
+
+        tr:nth-child(even){
+            background:#f9f9f9;
+        }
+
+        tr:hover{
+            background:#f0f0f0;
+        }
+
+        .no-data{
+            background:white;
+            padding:30px;
+            text-align:center;
+            color:#666;
+            border-radius:10px;
+            box-shadow:0 2px 10px rgba(0,0,0,.1);
+        }
+
+        /* Print Styles */
+        @media print{
+            .header, .sidebar, .controls, .back-link{
+                display:none;
+            }
+            .content{
+                padding:0;
+            }
+            table{
+                box-shadow:none;
+                border:1px solid #ddd;
+            }
+            th{
+                background:#1e3c72 !important;
+                color:white !important;
+                print-color-adjust:exact;
+                -webkit-print-color-adjust:exact;
+            }
+            .page-subtitle{
+                display:block;
+                margin-bottom:20px;
+                font-size:12px;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width:768px){
+            .controls{
+                flex-direction:column;
+                align-items:stretch;
+            }
+            .search-box,
+            .filter-group,
+            .btn-print{
+                width:100%;
+            }
+            .filter-group{
+                flex-direction:column;
+            }
+            .filter-group select,
+            .btn-print{
+                width:100%;
+            }
+            .result-count{
+                padding:10px 0;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <h2>Sangguniang Bayan Legislative Document Tracking System</h2>
+
+    <div class="header-right">
+        <div class="user-status">
+            <span class="status-indicator"></span>
+            <span>{{ session.get('fullname') }}</span>
+        </div>
+    </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <a href="/">Dashboard</a>
+        <a href="/add">Add Document</a>
+        <a href="/archives">Archives</a>
+        <a href="/reports">Reports</a>
+        <a href="/users">Users</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <!-- PAGE HEADER -->
+        <div class="page-header">
+            <h1 class="page-title">{{ page_title }}</h1>
+            <p class="page-subtitle">Last updated: {{ current_time }}</p>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="controls">
+            <a href="/" class="btn-back">← Back to Dashboard</a>
+            <form class="search-box" method="get" action="/analytics/{{ category }}" style="display:flex; gap:10px; align-items:center;">
+                <input type="text" id="searchInput" name="q" value="{{ query or '' }}" placeholder="Search by Control Number, Title, Date, Document Type, or Office..." onkeyup="filterTable()">
+                <button type="submit" class="btn-add" style="padding:10px 12px;">Search</button>
+            </form>
+            <div class="filter-group">
+                <select id="typeFilter" onchange="filterTable()">
+                    <option value="">All Document Types</option>
+                    <option value="ordinance">Ordinance</option>
+                    <option value="resolution">Resolution</option>
+                    <option value="memorandum">Memorandum</option>
+                    <option value="communication">Communication</option>
+                </select>
+                <select id="statusFilter" onchange="filterTable()">
+                    <option value="">All Status</option>
+                    <option value="received">Received</option>
+                    <option value="approved">Approved</option>
+                    <option value="archived">Archived</option>
+                    <option value="under review">Under Review</option>
+                </select>
+            </div>
+            <button class="btn-print" onclick="window.print()">🖨️ Print</button>
+            <div class="result-count">
+                <span id="resultCount">Showing all records</span>
+            </div>
+        </div>
+
+        <!-- TABLE -->
+        {% if documents %}
+        <table id="analyticsTable">
+            <thead>
+                <tr>
+                    <th>Control Number</th>
+                    <th>Date Received</th>
+                    <th>Office/Department From</th>
+                    <th>Title</th>
+                    <th>Document Type</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doc in documents %}
+                <tr class="doc-row" data-type="{{ doc[3]|lower }}" data-status="{{ doc[6]|lower }}">
+                    <td>{{ doc[1] }}</td>
+                    <td>{{ doc[4] }}</td>
+                    <td>{{ doc[5] }}</td>
+                    <td>{{ doc[2] }}</td>
+                    <td>{{ doc[3] }}</td>
+                    <td>{{ doc[6] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="no-data">
+            <h3 style="color:#1e3c72; margin-bottom:10px;">No Documents Found</h3>
+            <p>There are no documents in this category.</p>
+        </div>
+        {% endif %}
+
+    </div>
+
+</div>
+
+<script>
+function filterTable() {
+    const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
+    const typeFilter = document.getElementById('typeFilter').value.toLowerCase();
+    const statusFilter = document.getElementById('statusFilter').value.toLowerCase();
+    const table = document.getElementById('analyticsTable');
+    
+    if (!table) return; // Exit if table doesn't exist
+    
+    const rows = table.getElementsByClassName('doc-row');
+    let visibleCount = 0;
+
+    for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const rowText = row.innerText.toLowerCase();
+        const docType = row.getAttribute('data-type');
+        const docStatus = row.getAttribute('data-status');
+
+        // Search filter should match all visible table content
+        const searchMatch = rowText.includes(searchTerm);
+
+        // Type filter
+        const typeMatch = !typeFilter || docType.includes(typeFilter);
+
+        // Status filter
+        const statusMatch = !statusFilter || docStatus.includes(statusFilter);
+
+        if (searchMatch && typeMatch && statusMatch) {
+            row.style.display = '';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    }
+
+    // Update result count
+    const resultCount = document.getElementById('resultCount');
+    if (resultCount) {
+        if (visibleCount === rows.length) {
+            resultCount.textContent = `Showing all ${visibleCount} records`;
+        } else {
+            resultCount.textContent = `Showing ${visibleCount} of ${rows.length} records`;
+        }
+    }
+}
+
+// Initialize result count on page load
+window.addEventListener('DOMContentLoaded', function() {
+    filterTable();
+});
+</script>
+
+</body>
+</html>

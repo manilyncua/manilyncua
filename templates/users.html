@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>User Management - LGU System</title>
+
+<style>
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family:Arial, sans-serif;
+    }
+
+    body{
+        background:#f4f6f9;
+    }
+
+    .header{
+        background:#1e3c72;
+        color:white;
+        padding:15px 30px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        position:fixed;
+        top:0;
+        left:0;
+        right:0;
+        z-index:1000;
+        box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .header h2{
+        margin:0;
+    }
+
+    .container{
+        display:flex;
+        margin-top:60px;
+        min-height:calc(100vh - 60px);
+    }
+
+    .sidebar{
+        width:250px;
+        background:#2c3e50;
+        position:fixed;
+        left:0;
+        top:60px;
+        height:calc(100vh - 60px);
+        padding-top:20px;
+        overflow-y:auto;
+        box-shadow:2px 0 10px rgba(0,0,0,0.1);
+        z-index:999;
+    }
+
+    .sidebar a{
+        display:block;
+        color:white;
+        text-decoration:none;
+        padding:15px 20px;
+        transition:all 0.3s ease;
+        border-left:4px solid transparent;
+    }
+
+    .sidebar a:hover{
+        background:#34495e;
+        border-left-color:#f39c12;
+    }
+
+    .sidebar a.active{
+        background:#34495e;
+        border-left-color:#f39c12;
+    }
+
+    .content{
+        flex:1;
+        margin-left:250px;
+        padding:30px;
+        overflow-y:auto;
+        height:calc(100vh - 60px);
+    }
+
+    .page-heading{
+        margin-bottom:20px;
+    }
+
+    .page-heading h1{
+        font-size:28px;
+        font-weight:700;
+        color:#1e3c72;
+        margin-bottom:4px;
+        line-height:1.2;
+    }
+
+    .top-bar{
+        display:flex;
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+        margin-bottom:20px;
+    }
+
+    .btn{
+        padding:10px 15px;
+        border-radius:5px;
+        text-decoration:none;
+        color:white;
+    }
+
+    .btn-add{
+        background:#27ae60;
+    }
+
+    .btn-back{
+        background:#1e3c72;
+        color:white;
+        display:inline-block;
+        padding:10px 15px;
+        border-radius:5px;
+        text-decoration:none;
+        font-size:14px;
+    }
+
+    table{
+        width:100%;
+        border-collapse:collapse;
+        background:white;
+        box-shadow:0 2px 10px rgba(0,0,0,.1);
+    }
+
+    th{
+        background:#1e3c72;
+        color:white;
+        padding:12px;
+    }
+
+    td{
+        padding:12px;
+        border-bottom:1px solid #ddd;
+        text-align:center;
+    }
+
+    .role-admin{
+        background:#e74c3c;
+        color:white;
+        padding:5px 10px;
+        border-radius:5px;
+        font-size:12px;
+    }
+
+    .role-staff{
+        background:#3498db;
+        color:white;
+        padding:5px 10px;
+        border-radius:5px;
+        font-size:12px;
+    }
+
+    .btn-delete{
+        background:#e74c3c;
+        padding:6px 10px;
+        border-radius:5px;
+        color:white;
+        text-decoration:none;
+        font-size:13px;
+    }
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+    <h2>Sangguniang Bayan Legislative Document Tracking System</h2>
+    <div>LGU Admin Panel</div>
+</div>
+
+<div class="container">
+
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <a href="/">Dashboard</a>
+    <a href="/documents">Document Management</a>
+    <a href="/archives">Archives</a>
+    <a href="/reports">Reports</a>
+    <a href="/users">Users</a>
+    <a href="/logout">Logout</a>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+    <div class="page-heading">
+        <h1>User Management System</h1>
+    </div>
+
+    <div class="top-bar">
+
+        <a href="/" class="btn btn-back">
+            Back to Dashboard
+        </a>
+
+        <a href="/add_user" class="btn btn-add">
+            + Add User
+        </a>
+
+    </div>
+
+    <table>
+
+        <tr>
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Action</th>
+        </tr>
+
+        {% for u in users %}
+
+        <tr>
+            <td>{{ u[0] }}</td>
+            <td>{{ u[1] }}</td>
+            <td>{{ u[2] }}</td>
+
+            <td>
+                {% if u[4] == 'Admin' %}
+                    <span class="role-admin">Admin</span>
+                {% else %}
+                    <span class="role-staff">Staff</span>
+                {% endif %}
+            </td>
+
+            <td>
+                <a href="/delete_user/{{ u[0] }}" class="btn-delete">
+                    Delete
+                </a>
+            </td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</div>
+
+</div>
+
+</body>
+</html>

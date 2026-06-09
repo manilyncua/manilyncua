@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Add Document - LGU System</title>
+
+<style>
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family:Arial, sans-serif;
+    }
+
+    body{
+        background:#f4f6f9;
+    }
+
+    .header{
+        background:#1e3c72;
+        color:white;
+        padding:15px 30px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+    }
+
+    .container{
+        display:flex;
+    }
+
+    .sidebar{
+        width:250px;
+        background:#2c3e50;
+        min-height:100vh;
+        padding-top:20px;
+    }
+
+    .sidebar a{
+        display:block;
+        color:white;
+        text-decoration:none;
+        padding:15px 20px;
+    }
+
+    .sidebar a:hover{
+        background:#34495e;
+    }
+
+    .content{
+        flex:1;
+        padding:40px;
+    }
+
+    .form-box{
+        background:white;
+        width:500px;
+        padding:30px;
+        border-radius:10px;
+        box-shadow:0 2px 10px rgba(0,0,0,.1);
+    }
+
+    .form-box h2{
+        margin-bottom:20px;
+        color:#1e3c72;
+    }
+
+    label{
+        font-weight:bold;
+        color:#333;
+    }
+
+    input, select, textarea{
+        width:100%;
+        padding:10px;
+        margin:8px 0 15px 0;
+        border:1px solid #ccc;
+        border-radius:5px;
+    }
+
+    textarea{
+        resize:none;
+        height:80px;
+    }
+
+    button{
+        width:100%;
+        padding:12px;
+        background:#1e3c72;
+        color:white;
+        border:none;
+        border-radius:5px;
+        font-size:16px;
+        cursor:pointer;
+    }
+
+    button:hover{
+        background:#16325c;
+    }
+
+    .back{
+        display:inline-block;
+        margin-top:10px;
+        color:#1e3c72;
+        text-decoration:none;
+    }
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+    <h2>Sangguniang Bayan System</h2>
+    <div>Document Entry</div>
+</div>
+
+<div class="container">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <a href="/">Dashboard</a>
+    <a href="/documents">Document Management</a>
+    <a href="/archives">Archives</a>
+    <a href="/reports">Reports</a>
+    <a href="/users">Users</a>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+    <div class="form-box">
+
+        <a href="/documents" class="back" style="display: block; margin-bottom: 20px; font-weight: bold; font-size: 14px;">← Back to Document Management</a>
+        <h2>Add New Document</h2>
+
+        <form method="POST">
+
+            <label>Document Title</label>
+            <input type="text" name="title" required>
+
+            <label>Office / Department From</label>
+            <input type="text" name="originating_office" required>
+
+            <label>Date Received</label>
+            <input type="date" name="date_received" required>
+
+            <label>Document Type</label>
+            <select name="document_type">
+                <option>Letter</option>
+                <option>Resolution</option>
+                <option>Ordinance</option>
+                <option>Memorandum</option>
+                <option>Communication</option>
+            </select>
+
+            <label>Status</label>
+            <select name="status">
+                <option>Received</option>
+                <option>Under Review</option>
+                <option>Approved</option>
+                <option>Archived</option>
+            </select>
+
+            <label>Remarks</label>
+            <textarea name="remarks"></textarea>
+
+            <button type="submit">Save Document</button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</div>
+
+</body>
+</html>

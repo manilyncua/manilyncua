@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Document Reports</title>
+
+    <style>
+
+        /* ===== GLOBAL ===== */
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, sans-serif;
+        }
+
+        body{
+            background:#f4f6f9;
+        }
+
+        /* ===== HEADER ===== */
+        .header{
+            background:#1e3c72;
+            color:white;
+            padding:15px 30px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            position:fixed;
+            top:0;
+            left:0;
+            right:0;
+            z-index:1000;
+            box-shadow:0 4px 15px rgba(0,0,0,0.25);
+            border-bottom:3px solid #d4af37;
+        }
+
+        .header h2{
+            margin:0;
+            font-size:24px;
+            font-weight:700;
+        }
+
+        .header-right{
+            display:flex;
+            align-items:center;
+            gap:20px;
+        }
+
+        .user-status{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            font-size:14px;
+        }
+
+        .status-indicator{
+            width:10px;
+            height:10px;
+            background:#27ae60;
+            border-radius:50%;
+            animation:pulse 2s infinite;
+        }
+
+        @keyframes pulse{
+            0%, 100%{
+                opacity:1;
+            }
+            50%{
+                opacity:0.7;
+            }
+        }
+
+        /* ===== LAYOUT ===== */
+        .container{
+            display:flex;
+            margin-top:60px;
+            min-height:calc(100vh - 60px);
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar{
+            width:250px;
+            background:linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+            position:fixed;
+            left:0;
+            top:60px;
+            height:calc(100vh - 60px);
+            padding-top:20px;
+            overflow-y:auto;
+            box-shadow:2px 0 10px rgba(0,0,0,0.1);
+            z-index:999;
+            border-right:2px solid #d4af37;
+        }
+
+        .sidebar a{
+            display:block;
+            color:white;
+            text-decoration:none;
+            padding:15px 20px;
+            transition:all 0.3s ease;
+            border-left:4px solid transparent;
+            font-weight:500;
+        }
+
+        .sidebar a:hover{
+            background:#34495e;
+            border-left-color:#d4af37;
+            padding-left:25px;
+        }
+
+        .sidebar a.active{
+            background:#34495e;
+            border-left-color:#d4af37;
+        }
+
+        /* ===== CONTENT ===== */
+        .content{
+            flex:1;
+            margin-left:250px;
+            padding:30px;
+            overflow-y:auto;
+            height:calc(100vh - 60px);
+        }
+
+        /* ===== CONTROLS ===== */
+        .controls{
+            display:flex;
+            gap:15px;
+            margin-bottom:25px;
+            flex-wrap:wrap;
+            align-items:center;
+            background:white;
+            padding:20px;
+            border-radius:10px;
+            box-shadow:0 2px 10px rgba(0,0,0,0.1);
+            border-left:4px solid #1e3c72;
+        }
+
+        .search-box{
+            flex:1;
+            min-width:250px;
+        }
+
+        .search-box input{
+            width:100%;
+            padding:12px 15px;
+            border:2px solid #e0e0e0;
+            border-radius:6px;
+            font-size:14px;
+            transition:all 0.3s ease;
+            background:#fafafa;
+        }
+
+        .search-box input:focus{
+            outline:none;
+            border-color:#1e3c72;
+            background:white;
+            box-shadow:0 0 0 3px rgba(30, 60, 114, 0.1);
+        }
+
+        .filter-group{
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+        }
+
+        .filter-group select{
+            padding:12px 14px;
+            border:2px solid #e0e0e0;
+            border-radius:6px;
+            background:white;
+            font-size:14px;
+            cursor:pointer;
+            transition:all 0.3s ease;
+            font-weight:500;
+        }
+
+        .filter-group select:hover,
+        .filter-group select:focus{
+            outline:none;
+            border-color:#1e3c72;
+            box-shadow:0 0 0 3px rgba(30, 60, 114, 0.1);
+        }
+
+        .btn-back{
+            background:#1e3c72;
+            color:white;
+            text-decoration:none;
+            border-radius:5px;
+            padding:10px 15px;
+            display:inline-block;
+            font-size:14px;
+            margin-bottom:20px;
+        }
+
+        .btn-action{
+            padding:12px 18px;
+            background:#1e3c72;
+            color:white;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
+            font-size:14px;
+            font-weight:bold;
+            transition:all 0.3s ease;
+            box-shadow:0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        .btn-action:hover{
+            background:#152847;
+            transform:translateY(-2px);
+            box-shadow:0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .btn-export{
+            padding:12px 18px;
+            background:#27ae60;
+            color:white;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
+            font-size:14px;
+            font-weight:bold;
+            transition:all 0.3s ease;
+            box-shadow:0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        .btn-export:hover{
+            background:#229954;
+            transform:translateY(-2px);
+            box-shadow:0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .report-options{
+            background:white;
+            padding:20px;
+            border-radius:10px;
+            margin-bottom:25px;
+            border-left:4px solid #1e3c72;
+            box-shadow:0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .report-section{
+            margin-bottom:20px;
+        }
+
+        .report-section h3{
+            color:#1e3c72;
+            font-size:16px;
+            margin-bottom:12px;
+            font-weight:700;
+        }
+
+        .button-group{
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+        }
+
+        .button-group .btn-action,
+        .button-group .btn-export{
+            font-size:12px;
+            padding:10px 15px;
+        }
+
+        .report-title{
+            color:#1e3c72;
+            font-size:28px;
+            font-weight:700;
+            margin-bottom:5px;
+            line-height:1.2;
+        }
+
+        .timestamp{
+            color:#666;
+            font-size:13px;
+            margin-bottom:20px;
+        }
+
+        /* ===== TABLE ===== */
+        table{
+            width:100%;
+            border-collapse:collapse;
+            background:white;
+            box-shadow:0 2px 10px rgba(0,0,0,.1);
+        }
+
+        th{
+            background:#1e3c72;
+            color:white;
+            padding:12px;
+            text-align:left;
+        }
+
+        td{
+            padding:12px;
+            border-bottom:1px solid #ddd;
+            vertical-align:top;
+        }
+
+        tr:nth-child(even){
+            background:#f9f9f9;
+        }
+
+        tr:hover{
+            background:#f0f0f0;
+        }
+
+        /* Status Badge */
+        .status-badge{
+            display:inline-block;
+            padding:8px 14px;
+            border-radius:20px;
+            font-size:13px;
+            font-weight:bold;
+            color:white;
+            text-transform:uppercase;
+            letter-spacing:0.5px;
+        }
+
+        .status-received{
+            background:#3498db;
+        }
+
+        .status-under-review{
+            background:#f39c12;
+        }
+
+        .status-approved{
+            background:#27ae60;
+        }
+
+        .status-released{
+            background:#9b59b6;
+        }
+
+        .status-archived{
+            background:#95a5a6;
+        }
+
+        .no-data{
+            background:white;
+            padding:30px;
+            text-align:center;
+            color:#666;
+            border-radius:10px;
+            box-shadow:0 2px 10px rgba(0,0,0,.1);
+        }
+
+        /* Print Styles */
+        @media print{
+            .header, .sidebar, .controls{
+                display:none;
+            }
+            .content{
+                padding:0;
+            }
+            table{
+                box-shadow:none;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <h2>Sangguniang Bayan Legislative Document Tracking System</h2>
+
+    <div class="header-right">
+        <div class="user-status">
+            <span class="status-indicator"></span>
+            <span>{{ session.get('fullname') }}</span>
+        </div>
+    </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <a href="/">Dashboard</a>
+        <a href="/documents">Document Management</a>
+        <a href="/archives">Archives</a>
+        <a href="/reports" class="active">Reports</a>
+        <a href="/users">Users</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <h1 class="report-title">{{ report_title }}</h1>
+        <a href="/" class="btn-back">← Back to Dashboard</a>
+        <p class="timestamp">Last updated: {{ current_time }}</p>
+
+        <!-- SEARCH & FILTER CONTROLS -->
+        <form class="controls" method="get" action="/reports" id="reportsFilterForm" style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+            <div class="search-box" style="display:flex; gap:10px; align-items:center; flex:1; min-width:320px;">
+                <input type="text" id="searchInput" name="q" value="{{ query or '' }}" placeholder="Search by Control Number, Title, Office, Date, Type, or Status...">
+                <button type="submit" class="btn-add" style="padding:10px 12px;">Search</button>
+            </div>
+            <div class="filter-group">
+                <select id="documentTypeFilter" name="document_type">
+                    <option value="">All Document Types</option>
+                    <option value="letter" {% if document_type == 'letter' %}selected{% endif %}>Letter</option>
+                    <option value="resolution" {% if document_type == 'resolution' %}selected{% endif %}>Resolution</option>
+                    <option value="ordinance" {% if document_type == 'ordinance' %}selected{% endif %}>Ordinance</option>
+                    <option value="memorandum" {% if document_type == 'memorandum' %}selected{% endif %}>Memorandum</option>
+                    <option value="communication" {% if document_type == 'communication' %}selected{% endif %}>Communication</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <select id="statusFilter" name="status">
+                    <option value="" {% if not status %}selected{% endif %}>All Status</option>
+                    <option value="received" {% if status == 'received' %}selected{% endif %}>Received</option>
+                    <option value="under review" {% if status == 'under review' %}selected{% endif %}>Under Review</option>
+                    <option value="approved" {% if status == 'approved' %}selected{% endif %}>Approved</option>
+                    <option value="released" {% if status == 'released' %}selected{% endif %}>Released</option>
+                    <option value="archived" {% if status == 'archived' %}selected{% endif %}>Archived</option>
+                </select>
+            </div>
+            {% if period %}
+            <input type="hidden" name="period" value="{{ period }}">
+            {% endif %}
+        </form>
+
+        <!-- REPORT GENERATION OPTIONS -->
+        <div class="report-options">
+            <div class="report-section">
+                <h3>📊 Report Generation</h3>
+                <div class="button-group">
+                    <button class="btn-action" onclick="goToPeriod('daily')">📅 Daily</button>
+                    <button class="btn-action" onclick="goToPeriod('weekly')">📅 Weekly</button>
+                    <button class="btn-action" onclick="goToPeriod('monthly')">📅 Monthly</button>
+                </div>
+            </div>
+
+            <div class="report-section">
+                <h3>🖨️ Print Report</h3>
+                <div class="button-group">
+                    <select id="printOption" class="filter-group" style="min-width: 260px; padding: 10px 12px; border-radius: 5px; border: 1px solid #ddd; background: white;">
+                        <option value="current">Current Search Results</option>
+                        <option value="daily">Daily Report</option>
+                        <option value="weekly">Weekly Report</option>
+                        <option value="monthly">Monthly Report</option>
+                        <option value="approved">Approved Documents</option>
+                        <option value="released">Released Documents</option>
+                        <option value="received">Received Documents</option>
+                        <option value="under-review">Under Review Documents</option>
+                        <option value="archived">Archived Documents</option>
+                    </select>
+                    <button class="btn-export" onclick="printSelectedReport()">Print Report</button>
+                </div>
+            </div>
+
+            <div class="report-section">
+                <h3>📥 Export Options</h3>
+                <div class="button-group">
+                    <button class="btn-export" onclick="exportToCSV()">📊 Export to Excel</button>
+                    <button class="btn-export" onclick="exportToPDF()">📄 Export to PDF</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABLE -->
+        {% if documents %}
+        <table id="reportTable">
+            <thead>
+                <tr>
+                    <th>Control Number</th>
+                    <th>Date Received</th>
+                    <th>Office From</th>
+                    <th>Title</th>
+                    <th>Document Type</th>
+                    <th>Status</th>
+                    <th>Date Released</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doc in documents %}
+                <tr class="report-row" data-status="{{ doc[6]|lower }}" data-date="{{ doc[4] }}">
+                    <td>{{ doc[1] }}</td>
+                    <td>{{ doc[4] }}</td>
+                    <td>{{ doc[5] if doc[5] else 'N/A' }}</td>
+                    <td>{{ doc[2] }}</td>
+                    <td>{{ doc[3] }}</td>
+                    <td>
+                        <span class="status-badge status-{{ doc[6].lower().replace(' ', '-') }}">
+                            {{ doc[6] }}
+                        </span>
+                    </td>
+                    <td>{{ doc[12] if doc[12] else 'N/A' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="no-data">No documents found.</div>
+        {% endif %}
+
+    </div>
+
+</div>
+
+<script>
+// Combined search and filter
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const statusFilter = document.getElementById('statusFilter');
+    
+    if (searchInput) {
+        searchInput.addEventListener('keyup', filterTable);
+    }
+    if (statusFilter) {
+        statusFilter.addEventListener('change', filterTable);
+    }
+});
+
+function filterTable(){
+    const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
+    const statusValue = document.getElementById('statusFilter')?.value.toLowerCase() || '';
+    const rows = document.querySelectorAll('.report-row');
+
+    rows.forEach(row => {
+        const rowText = row.innerText.toLowerCase();
+        const rowStatus = row.getAttribute('data-status') || '';
+        
+        // Check search term in all columns
+        const matchesSearch = rowText.includes(searchTerm);
+        
+        // Check status filter
+        const matchesStatus = !statusValue || rowStatus.includes(statusValue);
+        
+        // Show/hide row based on both conditions
+        row.style.display = (matchesSearch && matchesStatus) ? '' : 'none';
+    });
+}
+
+function goToPeriod(period) {
+    const params = new URLSearchParams(window.location.search);
+    if (period) {
+        params.set('period', period);
+    } else {
+        params.delete('period');
+    }
+
+    window.location.href = '/reports?' + params.toString();
+}
+
+function printSelectedReport() {
+    const option = document.getElementById('printOption')?.value || 'current';
+    const rows = document.querySelectorAll('.report-row');
+    const originalStates = Array.from(rows, row => row.style.display);
+    const today = new Date();
+
+    rows.forEach(row => {
+        const rowDate = row.getAttribute('data-date');
+        const rowStatus = (row.getAttribute('data-status') || '').toLowerCase();
+
+        let shouldShow = true;
+
+        if (option === 'daily') {
+            shouldShow = rowDate === today.toISOString().slice(0, 10);
+        } else if (option === 'weekly') {
+            const start = new Date(today);
+            start.setDate(today.getDate() - today.getDay() + 1);
+            const end = new Date(start);
+            end.setDate(start.getDate() + 6);
+            const current = new Date(rowDate);
+            shouldShow = current >= start && current <= end;
+        } else if (option === 'monthly') {
+            const start = new Date(today.getFullYear(), today.getMonth(), 1);
+            const end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            const current = new Date(rowDate);
+            shouldShow = current >= start && current <= end;
+        } else if (option === 'approved') {
+            shouldShow = rowStatus === 'approved';
+        } else if (option === 'released') {
+            shouldShow = rowStatus === 'released';
+        } else if (option === 'received') {
+            shouldShow = rowStatus === 'received';
+        } else if (option === 'under-review') {
+            shouldShow = rowStatus === 'under review';
+        } else if (option === 'archived') {
+            shouldShow = rowStatus === 'archived';
+        }
+
+        row.style.display = shouldShow ? '' : 'none';
+    });
+
+    const visibleRows = Array.from(rows).filter(row => row.style.display !== 'none');
+    if (!visibleRows.length) {
+        rows.forEach((row, index) => row.style.display = originalStates[index]);
+        alert('No records found for the selected print option.');
+        return;
+    }
+
+    window.print();
+    rows.forEach((row, index) => row.style.display = originalStates[index]);
+}
+
+function exportToCSV() {
+    const table = document.getElementById('reportTable');
+    if (!table) return;
+
+    let csv = [];
+    const rows = table.querySelectorAll('tr');
+
+    rows.forEach(row => {
+        const cols = row.querySelectorAll('td, th');
+        const csvRow = [];
+        cols.forEach(col => {
+            csvRow.push('"' + col.innerText.replace(/"/g, '""') + '"');
+        });
+        csv.push(csvRow.join(','));
+    });
+
+    // Only include visible rows
+    const visibleCSV = [];
+    const allRows = table.querySelectorAll('tr');
+    allRows.forEach((row, index) => {
+        if (index === 0 || row.style.display !== 'none') {
+            visibleCSV.push(csv[index]);
+        }
+    });
+
+    const csvContent = visibleCSV.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `report_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+}
+
+function exportToPDF() {
+    const table = document.getElementById('reportTable');
+    if (!table) return;
+
+    // Note: Full PDF export requires a library like jspdf
+    // This is a simplified version that uses browser's print to PDF
+    alert('To export as PDF, use the Print functionality and select "Save as PDF" in your browser print dialog.');
+    
+    window.print();
+}
+</script>
+
+</body>
+</html>
